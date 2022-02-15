@@ -1,11 +1,13 @@
-import React, { useState } from 'react'
+import React from 'react'
+import useLocalStorage from './hooks/useLocalStorage'
 import './app.css'
 import AddTodo from './components/AddTodo'
 import ListTodos from './components/ListTodos'
 
 const App = () => {
     console.log('App')
-    const [todos, setTodos] = useState([])
+
+    const [todos, setTodos] = useLocalStorage([], 'todos')
     
     const addTodo = (text) => {
         if (text.trim().length) {
