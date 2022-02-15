@@ -1,9 +1,11 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import ItemTodo from './ItemTodo'
 
 
-const ListTodos = ({ todos, removeTodo, toggleCompleted }) => {
+const ListTodos = () => {
     console.log('List')
+    const todos = useSelector(state=> state.todos.todos)
 
     if (!todos.length) return (<h2>Empty</h2>)
     return (
@@ -13,8 +15,6 @@ const ListTodos = ({ todos, removeTodo, toggleCompleted }) => {
                 {todos.map((todo) =>
                     <ItemTodo
                         key={todo.id}
-                        removeTodo={removeTodo}
-                        toggleCompleted={toggleCompleted}
                         {...todo} />
                 )}
             </ul>
