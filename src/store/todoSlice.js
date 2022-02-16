@@ -1,29 +1,62 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit';
+import { createTodo, toggleTodo, deleteTodo, fetchTodos } from './asyncActions';
 
+//вспомогательные функции для обработки загрузки и ошибок
+const setError = (state, action) => {
+    state.status = 'rejected'
+    state.error = action.payload
+};
+const setLoading = (state) => {
+    state.status = 'loading'
+    state.error = null
+};
+
+//создание части state для списка дел
 const todoSlice = createSlice({
     name: 'todos',
     initialState: {
-        todos: []
+        todos: [],
+        status: null,
+        error: null
     },
-    reducers: { //это набор методов
-        addTodo(state, action) {
-            //proxy скрывает момент мутации поэтому можно без копий
-            state.todos.push({
-                id: new Date().toISOString(),
-                text: action.payload,
-                completed: false
-            })
+    extraReducers: {
+        //это методы для асинхронной работы
+        //----------------------------------------------
+        //получение всех элементов от сервера
+        [fetchTodos.pending]: setLoading,
+        [fetchTodos.fulfilled]: (state, action) => {
+            state.todos = action.payload;
+            state.status = 'resolved';
         },
-        removeTodo(state, action) {
-            state.todos = state.todos.filter((i) => i.id !== action.payload)
+        [fetchTodos.rejected]: setError,
+        //----------------------------------------------
+        //удаление конкретного элемента
+        [deleteTodo.pending]: setLoading,
+        [deleteTodo.fulfilled]: (state, action) => {
+            state.todos = state.todos.filter((i) => i.id !== action.payload);
+            state.status = 'resolved';
         },
-        toggleCompleted(state, action) {
-            const toggleTodo = state.todos.find(i => i.id === action.payload.id)
-            toggleTodo.completed = !toggleTodo.completed
-        }
+        [deleteTodo.rejected]: setError,
+        //----------------------------------------------
+        //переключение конкретного элемента 
+        [toggleTodo.pending]: setLoading,
+        [toggleTodo.fulfilled]: (state, action) => {
+            const toggleTodo = state.todos.find(i => i.id === action.payload);
+            toggleTodo.completed = !toggleTodo.completed;
+            state.status = 'resolved';
+        },
+        [toggleTodo.rejected]: setError,
+        //----------------------------------------------
+        //создание нового элемента
+        [createTodo.pending]: setLoading,
+        [createTodo.fulfilled]: (state, action) => {
+            state.todos.push(action.payload);
+            state.status = 'resolved';
+        },
+        [createTodo.rejected]: setError,
+        //----------------------------------------------
     }
-})
+});
 
-export const { addTodo, removeTodo, toggleCompleted } = todoSlice.actions
-
-export default todoSlice.reducer
+//экспорт части state как редюсер
+export default todoSlice.reducer;

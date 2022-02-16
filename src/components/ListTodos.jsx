@@ -1,11 +1,11 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import ItemTodo from './ItemTodo'
+import React from 'react';
+import { useSelector } from 'react-redux';
+import ItemTodo from './ItemTodo';
 
 
 const ListTodos = () => {
     console.log('List')
-    const todos = useSelector(state=> state.todos.todos)
+    const todos = useSelector(state => state.todos.todos)
 
     if (!todos.length) return (<h2>Empty</h2>)
     return (
@@ -20,6 +20,6 @@ const ListTodos = () => {
             </ul>
         </div>
     )
-}
+};
 
-export default React.memo(ListTodos)
+export default React.memo(ListTodos);

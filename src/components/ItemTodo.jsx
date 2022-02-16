@@ -1,12 +1,12 @@
-import React from 'react'
-import { useDispatch } from 'react-redux'
-import { toggleCompleted, removeTodo } from '../store/todoSlice'
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { toggleTodo, deleteTodo } from '../store/asyncActions';
 
-const Item = ({ id, completed, text }) => {
+const Item = ({ id, completed, title }) => {
     console.log('Item')
     const dispatch = useDispatch()
-    const onRemove = () => dispatch(removeTodo(id))
-    const onToggle = () => dispatch(toggleCompleted({id}))
+    const onRemove = () => dispatch(deleteTodo(id))
+    const onToggle = () => dispatch(toggleTodo(id))
 
     return (
         <li key={id}>
@@ -14,11 +14,12 @@ const Item = ({ id, completed, text }) => {
                 onChange={onToggle}
                 checked={completed}
                 type="checkbox" />
-            <span>{text}</span>
+            <span>{title}</span>
             <span
                 onClick={onRemove}
                 className='symbol'>&times;</span>
         </li>
     )
-}
-export default React.memo(Item)
+};
+
+export default React.memo(Item);
